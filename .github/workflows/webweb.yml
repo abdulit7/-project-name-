@@ -41,12 +41,11 @@ jobs:
         flutter-version: ${{ env.FLUTTER_VERSION }}
 
     - name: Install Flutter Dependencies
-      run: |
-        cd myapp  # Change directory to your Flutter project
-        flutter pub get
+      working-directory: myapp  # Ensure actions run inside myapp
+      run: flutter pub get
 
     - name: Build Flutter Web
-      working-directory: myapp  # Set working directory for Flutter project
+      working-directory: myapp  # Ensure build runs inside myapp
       run: |
         flutter config --no-analytics
         flutter build web --release --base-href=/ --build-number=$BUILD_NUMBER
@@ -55,6 +54,6 @@ jobs:
       uses: actions/upload-artifact@v4.3.4
       with:
         name: web-build-artifact
-        path: myapp/build/web  # Adjusted path
+        path: myapp/build/web  # Corrected path
         if-no-files-found: warn
         overwrite: false
