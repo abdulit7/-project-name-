@@ -1,4 +1,4 @@
-name: Android APK Build
+name: Web Build
 
 on:
   push:
@@ -18,7 +18,7 @@ env:
   FLUTTER_VERSION: 3.22.2
 
 jobs:
-  build-apk:
+  build-web:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,21 +40,15 @@ jobs:
       with:
         flutter-version: ${{ env.FLUTTER_VERSION }}
 
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4.2.1
-      with:
-        distribution: 'temurin'
-        java-version: '21'
-
-    - name: Flet Build APK
+    - name: Build Flutter Web
       run: |
         flutter config --no-analytics
-        flet build apk --verbose --build-number=$BUILD_NUMBER --build-version=$BUILD_VERSION
+        flutter build web --release --base-href=/ --build-number=$BUILD_NUMBER --build-version=$BUILD_VERSION
 
-    - name: Upload APK Artifact
+    - name: Upload Web Build Artifact
       uses: actions/upload-artifact@v4.3.4
       with:
-        name: apk-build-artifact
-        path: build/apk
+        name: web-build-artifact
+        path: build/web
         if-no-files-found: warn
         overwrite: false
