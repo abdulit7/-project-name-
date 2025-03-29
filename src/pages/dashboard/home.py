@@ -1,15 +1,43 @@
 import flet as ft
+from nav.sidebar import SidebarPage
+from nav.menubar import TopBarPage
+from components.cards import MainCards
 
-def Home(page: ft.Page):
-    return ft.Column(
-        controls=[
-            ft.Text("Welcome to the Asset Management System", size=30),
-            ft.Text("This is the home page of the dashboard.", size=20),
-            ft.Button("Go to Users", on_click=lambda e: page.go("/user")),
-            ft.Button("Go to Assets", on_click=lambda e: page.go("/asset")),
-            ft.Button("Go to Categories", on_click=lambda e: page.go("/category")),
-            ft.Button("Go to Departments", on_click=lambda e: page.go("/department")),
-        ],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-    )
+class Home(ft.Container):
+    def __init__(self, page: ft.Page):
+        super().__init__()
+
+        self.expand = True
+
+        page.window.title = "Asset Management System"
+
+        self.content = ft.Column(
+            controls=[
+                TopBarPage(page),  # Menubar at the top
+                ft.Row(
+                    controls=[
+                        ft.Container(
+                              # Fixed width for the sidebar
+                            content=SidebarPage(page),  # Sidebar container
+                        ),
+                        ft.Container(
+                            expand=True,  # Ensure the content area expands to take remaining space
+                            content=ft.Column(
+                                controls=[
+                                    ft.ElevatedButton(
+                                        icon=ft.Icons.ADD, text="Add Asset more"
+                                    ),
+                                    MainCards(page)
+                                ],
+                                spacing=10,  # Adds spacing between the button and the cards
+                            ),
+                            bgcolor=ft.Colors.GREY_200,
+                            padding=10,  # Padding for the main content area
+                        ),
+                    ],
+                    alignment=ft.MainAxisAlignment.START,
+                    spacing=0,  # No space between the sidebar and the content area
+                ),
+            ],
+            spacing=0,  # Ensure no space between menubar and the row
+        )
